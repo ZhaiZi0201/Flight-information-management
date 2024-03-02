@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace=-->
+<mapper namespace="com.zhai.mapper.FlightMapper">
+<!--    Result Map映射-->
+    <resultMap id="flightEntityMap" type="com.zhai.entity.FlightEntity">
+        <!-- 数据库中字段名称 column="" property="id"  类中成员属性名称-->
+        <id column="id" property="id"></id>
+        <result column="flight_id" property="flightId"></result>
+        <result column="departure_airport" property="departureAirport"></result>
+        <result column="departure_time" property="departureTime"></result>
+        <result column="arrive_time" property="arriveTime"></result>
+        <result column="model" property="model"></result>
+        <result column="is_delete" property="isDelete"></result>
+    </resultMap>
+<!--    获取全部信息-->
+    <select id="getByFlightAll" resultType="com.zhai.entity.FlightEntity">
+        select * from mayikt_flight;
+    </select>
+<!--    根据id搜索-->
+    <select id="getByIdFlight" parameterType="int" resultMap="flightEntityMap">
+        select * from mayikt_flight where  id=#{id};
+    </select>
+<!--       select标签查询数据insert标签 插入数据-->
+    <insert id="insertFlight" parameterType="com.zhai.entity.FlightEntity">
+        INSERT INTO `flight`.`mayikt_flight` (`id`, `flight_id`, `company`, `departure_airport`, `arrive_airport`, `departure_time`, `arrive_time`, `model`, `is_delete`)
+        VALUES (null,  #{flightId}, #{company}, #{departureAirport},#{arriveAirport}, #{departureTime},#{arriveTime},#{model}, #{isDelete});
+    </insert>
+<!--    根据id删除-->
+    <delete id="deleteByIdFlight" parameterType="int">
+        delete from mayikt_flight where id=#{id};
+    </delete>
+<!--多条件查询-->
+    <select id="getByIdFlightPoJo" parameterType="com.zhai.entity.FlightEntity" resultMap="flightEntityMap">
+        SELECT * from mayikt_flight where company=#{company}
+                                      and departure_airport=#{departureAirport} and arrive_airport=#{arriveAirport};
+    </select>
+<!--    动态查询-->
+
+    <select id="getByIdFlightDynamicParameter" parameterType="com.zhai.entity.FlightEntity"
+            resultMap="flightEntityMap">
+        SELECT * from mayikt_flight
+
+        <where>
+            <if test="company!=null and  company!=''">
+                and company=#{company}
+            </if>
+            <if test="departureAirport!=null and  departureAirport!=''">
+                and departure_airport=#{departureAirport}
+            </if>
+            <if test="arriveAirport!=null and  arriveAirport!=''">
+                and arrive_airport=#{arriveAirport};
+            </if>
+        </where>
+
+
+    </select>
+</mapper>
